@@ -9,7 +9,9 @@
     "lint": "eslint"
   },
   "overrides": {
-    "@sanity/client": "^7.13.1"
+    "@sanity/client": "^7.13.1",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
   },
   "dependencies": {
     "@sanity/client": "^7.13.1",
