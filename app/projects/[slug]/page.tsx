@@ -58,7 +58,7 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                         <div className="flex flex-col gap-8">
                             {/* Category & Date */}
                             <span className="text-gold text-xs tracking-[0.4em] uppercase">
-                                {project.category} — {new Date(project.date).getFullYear()}
+                                {project.category}{project.date && ` — ${new Date(project.date).getFullYear()}`}
                             </span>
 
                             {/* Title */}
