@@ -109,11 +109,11 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
                             <Motion.FadeInUp key={image?.asset?._ref || i} className="w-full" delay={0.2}>
                                 <ProtectedGalleryImage
                                     src={urlFor(image).width(1200).quality(90).url()}
-                                    alt={image.alt || `Gallery Image ${i}`}
+                                    alt={(image as { alt?: string })?.alt || `Gallery Image ${i}`}
                                 />
-                                {image.alt && (
+                                {(image as { alt?: string })?.alt && (
                                     <p className="text-[10px] text-white/20 tracking-[0.2em] uppercase mt-6 text-center">
-                                        {image.alt}
+                                        {(image as { alt?: string }).alt}
                                     </p>
                                 )}
                             </Motion.FadeInUp>
