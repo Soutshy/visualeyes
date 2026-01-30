@@ -8,7 +8,11 @@
     "start": "next start",
     "lint": "eslint"
   },
+  "overrides": {
+    "@sanity/client": "^7.13.1"
+  },
   "dependencies": {
+    "@sanity/client": "^7.13.1",
     "@sanity/image-url": "^1.2.0",
     "@sanity/vision": "^4.22.0",
     "@studio-freight/react-lenis": "^0.0.47",
