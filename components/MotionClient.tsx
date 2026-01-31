@@ -44,3 +44,18 @@ export const ParallaxImage = ({ children, className = "" }: { children: React.Re
         </motion.div>
     )
 };
+
+// Scale In animation - for hero images with dramatic zoom reveal
+export const ScaleIn = ({ children, className = "" }: { children: React.ReactNode, className?: string }) => {
+    return (
+        <motion.div
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.2, ease: [0.25, 0.46, 0.45, 0.94] }}
+            className={className}
+        >
+            {children}
+        </motion.div>
+    );
+};
+

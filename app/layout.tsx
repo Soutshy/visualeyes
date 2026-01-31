@@ -6,6 +6,8 @@ import { RightClickProtector } from "@/components/RightClickProtector";
 import { TransitionProvider } from "@/components/TransitionContext";
 import { Navbar } from "@/components/Navbar";
 import { Preloader } from "@/components/Preloader";
+import { CustomCursor } from "@/components/CustomCursor";
+import { FilmGrain } from "@/components/UiWrappers";
 
 const playfair = Playfair_Display({
   variable: "--font-playfair",
@@ -38,10 +40,16 @@ export default function RootLayout({
         className={`${playfair.variable} ${manrope.variable} antialiased bg-rich-black text-off-white`}
         suppressHydrationWarning
       >
+        {/* Global overlays - outside scroll container */}
+        <CustomCursor />
+        <Preloader />
+        <FilmGrain />
+
+        {/* Navbar outside SmoothScroll to fix MenuOverlay positioning */}
+        <Navbar />
+
         <SmoothScroll>
-          <Preloader />
           <TransitionProvider>
-            <Navbar />
             <RightClickProtector />
             {children}
           </TransitionProvider>
@@ -50,3 +58,5 @@ export default function RootLayout({
     </html>
   );
 }
+
+

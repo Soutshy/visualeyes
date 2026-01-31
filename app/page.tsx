@@ -7,7 +7,7 @@ import { Services } from "@/components/Services";
 import { LandingShowcase } from "@/components/LandingShowcase";
 import { Contact } from "@/components/Contact";
 import { Footer } from "@/components/Footer";
-import { getProjects, getFounderNote } from "@/lib/sanity.queries";
+import { getProjects, getFounderNote, getHeroImages } from "@/lib/sanity.queries";
 import { FounderNote } from "@/components/FounderNote";
 
 // Revalidate every 60 seconds (or 0 for on-demand/instant dev feedback)
@@ -16,10 +16,11 @@ export const revalidate = 60;
 export default async function Home() {
   const projects = await getProjects();
   const founderData = await getFounderNote();
+  const heroImages = await getHeroImages();
 
   return (
     <main className="min-h-screen bg-rich-black">
-      <Hero />
+      <Hero heroImages={heroImages} />
       <Manifesto />
       <section className="relative w-full bg-rich-black overflow-hidden">
         {/* Title Block */}

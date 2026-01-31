@@ -9,6 +9,9 @@ export function Footer() {
         window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
+    // Marquee content - repeated for seamless loop
+    const marqueeText = "VISUAL EYES • PHOTOGRAPHY AGENCY • PARIS • ";
+
     return (
         <footer className="bg-rich-black pt-32 pb-10 px-6 md:px-12 border-t border-white/10 relative overflow-hidden">
 
@@ -77,13 +80,35 @@ export function Footer() {
                     </div>
                 </div>
 
-                {/* Bottom Section: BIG TITLE */}
-                <div className="relative mt-auto border-t border-white/5 pt-12">
-                    <h1 className="font-display text-[13vw] leading-[0.8] text-center text-transparent bg-clip-text bg-gradient-to-b from-white/10 to-transparent select-none pointer-events-none uppercase">
-                        Visual Eyes
-                    </h1>
+                {/* Bottom Section: MARQUEE */}
+                <div className="relative mt-auto border-t border-white/5 pt-8 -mx-6 md:-mx-12 overflow-hidden">
+                    {/* Infinite Marquee */}
+                    <div className="flex whitespace-nowrap">
+                        <motion.div
+                            className="flex gap-4"
+                            animate={{ x: [0, "-50%"] }}
+                            transition={{
+                                x: {
+                                    repeat: Infinity,
+                                    repeatType: "loop",
+                                    duration: 20,
+                                    ease: "linear",
+                                },
+                            }}
+                        >
+                            {/* Repeat text multiple times for seamless loop */}
+                            {[...Array(4)].map((_, i) => (
+                                <span
+                                    key={i}
+                                    className="font-display text-[10vw] md:text-[8vw] text-transparent bg-clip-text bg-gradient-to-r from-white/10 via-white/20 to-white/10 uppercase tracking-tight select-none"
+                                >
+                                    {marqueeText}
+                                </span>
+                            ))}
+                        </motion.div>
+                    </div>
 
-                    <div className="absolute bottom-2 w-full flex justify-between text-[10px] text-white/20 uppercase tracking-widest px-2">
+                    <div className="absolute bottom-2 w-full flex justify-between text-[10px] text-white/20 uppercase tracking-widest px-6 md:px-12">
                         <span>© 2024 Visual Eyes Agency</span>
                         <span>Privacy Policy</span>
                     </div>
@@ -92,3 +117,4 @@ export function Footer() {
         </footer>
     );
 }
+

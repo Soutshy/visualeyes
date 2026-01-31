@@ -42,8 +42,42 @@ export default async function ProjectPage({ params }: { params: Promise<{ slug: 
     return (
         <main className="min-h-screen bg-rich-black text-off-white">
 
-            {/* Sticky Grid Layout */}
-            <div className="grid grid-cols-1 lg:grid-cols-12 min-h-screen">
+            {/* Full-Width Hero Image */}
+            {project.mainImage && (
+                <section className="relative h-[70vh] md:h-[85vh] w-full overflow-hidden">
+                    {/* Image with scale animation */}
+                    <Motion.ScaleIn className="absolute inset-0">
+                        <div className="absolute inset-0">
+                            <img
+                                src={urlFor(project.mainImage).width(2000).quality(90).url()}
+                                alt={project.mainImage.alt || project.title}
+                                className="w-full h-full object-cover"
+                            />
+                            {/* Dark overlay gradient */}
+                            <div className="absolute inset-0 bg-gradient-to-b from-rich-black/30 via-transparent to-rich-black" />
+                        </div>
+                    </Motion.ScaleIn>
+
+                    {/* Category Badge */}
+                    <div className="absolute top-8 left-8 z-10">
+                        <span className="text-gold text-xs tracking-[0.4em] uppercase bg-rich-black/50 px-4 py-2 backdrop-blur-md">
+                            {project.category}
+                        </span>
+                    </div>
+
+                    {/* Title Overlay at Bottom */}
+                    <div className="absolute bottom-0 left-0 right-0 p-8 md:p-16 z-10">
+                        <Motion.FadeInUp>
+                            <h1 className="font-display text-5xl md:text-7xl lg:text-8xl text-off-white leading-[0.9] max-w-4xl">
+                                {project.title}
+                            </h1>
+                        </Motion.FadeInUp>
+                    </div>
+                </section>
+            )}
+
+            {/* Content Grid Layout */}
+            <div className="grid grid-cols-1 lg:grid-cols-12">
 
                 {/* Left Column: Sticky Infos */}
                 <aside className="lg:col-span-4 lg:h-screen lg:sticky lg:top-0 flex flex-col justify-center px-6 py-12 lg:px-12 z-10 relative">

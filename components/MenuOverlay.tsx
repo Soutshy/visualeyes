@@ -30,17 +30,18 @@ export function MenuOverlay({ onClose }: { onClose: () => void }) {
             animate={{ y: 0 }}
             exit={{ y: "-100%" }}
             transition={{ duration: 0.8, ease: [0.76, 0, 0.24, 1] }}
-            className="fixed inset-0 z-[50] bg-rich-black flex flex-col md:flex-row overflow-hidden"
+            className="fixed inset-0 z-[55] bg-rich-black flex flex-col md:flex-row overflow-hidden"
+            style={{ top: 0, left: 0, right: 0, bottom: 0, position: 'fixed' }}
         >
 
-            {/* Left: Links */}
-            <div className="flex-1 flex flex-col justify-center px-8 md:px-24 gap-6 md:gap-8 relative z-10 w-full h-full">
+            {/* Left: Links - Use h-screen instead of h-full to ensure viewport height */}
+            <div className="flex-1 flex flex-col justify-center items-start px-8 md:px-24 gap-6 md:gap-8 relative z-10 min-h-screen">
                 {LINKS.map((link, i) => (
                     <motion.div
                         key={link.title}
-                        initial={{ opacity: 0, y: 50 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.4 + (i * 0.1), duration: 0.5, ease: "easeOut" }}
+                        initial={{ opacity: 0, x: -50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: 0.2 + (i * 0.08), duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
                         onMouseEnter={() => setHoveredIndex(i)}
                         onMouseLeave={() => setHoveredIndex(null)}
                     >

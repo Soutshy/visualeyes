@@ -116,3 +116,66 @@ export async function getFounderNote(): Promise<FounderNote | null> {
     }`
     );
 }
+
+// Hero Images for the landing page wall
+export interface HeroImage {
+    _id: string;
+    image: any;
+    column: number;
+    order: number;
+    alt?: string;
+}
+
+export interface HeroImagesGrouped {
+    column1: HeroImage[];
+    column2: HeroImage[];
+    column3: HeroImage[];
+}
+
+export async function getHeroImages(): Promise<HeroImagesGrouped> {
+    const images = await client.fetch<HeroImage[]>(
+        groq`*[_type == "heroImage"] | order(column asc, order asc) {
+            _id,
+            image,
+            column,
+            order,
+            alt
+        }`
+    );
+
+    // Group by column
+    return {
+        column1: images.filter(img => img.column === 1),
+        column2: images.filter(img => img.column === 2),
+        column3: images.filter(img => img.column === 3),
+    };
+}
+
+// About Page content
+export interface AboutPageData {
+    _id: string;
+    tagline?: string;
+    paragraph1?: string;
+    paragraph2?: string;
+    teamImage?: any;
+    cameraImage?: any;
+    backstageImage?: any;
+    featuredIn?: string[];
+}
+
+export async function getAboutPage(): Promise<AboutPageData | null> {
+    return client.fetch(
+        groq`*[_type == "aboutPage"][0] {
+            _id,
+            tagline,
+            paragraph1,
+            paragraph2,
+            teamImage,
+            cameraImage,
+            backstageImage,
+            featuredIn
+        }`
+    );
+}
+
+

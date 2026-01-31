@@ -56,14 +56,14 @@ export function WorkIndex({ projects }: WorkIndexProps) {
                 </div>
 
                 {/* List Container */}
-                <div className="flex flex-col group/list hover:*:opacity-30">
+                <div className="flex flex-col group/list hover:*:opacity-30 relative z-30">
                     {/* The hover:*:opacity-30 trick dimms ALL children when one is hovered, but we override op-100 on the hovered one */}
 
                     {projects.map((project, index) => (
                         <Link
                             key={project._id}
                             href={`/projects/${project.slug}`}
-                            className="group/item relative border-b border-white/10 py-12 px-4 grid grid-cols-12 items-baseline transition-all duration-500 hover:!opacity-100 hover:border-white/30"
+                            className="group/item relative border-b border-white/10 py-12 px-4 grid grid-cols-12 items-baseline transition-all duration-500 hover:!opacity-100 hover:border-white/30 z-10"
                             onMouseEnter={() => setActiveProject(project)}
                             onMouseLeave={() => setActiveProject(null)}
                         >
@@ -107,9 +107,8 @@ export function WorkIndex({ projects }: WorkIndexProps) {
                 </div>
             </div>
 
-            {/* Floating Image Portal */}
-            <div className="pointer-events-none fixed inset-0 z-20 hidden md:block mix-blend-difference">
-                {/* Mix-blend difference creates cool effect over text */}
+            {/* Floating Image Portal - absolute instead of fixed to work with SmoothScroll */}
+            <div className="pointer-events-none absolute inset-0 z-20 hidden md:block overflow-visible">
                 <AnimatePresence mode="wait">
                     {activeProject && activeProject.mainImage && (
                         <motion.div
@@ -122,16 +121,17 @@ export function WorkIndex({ projects }: WorkIndexProps) {
                                 y: springY,
                                 translateX: "-50%",
                                 translateY: "-50%",
-                                pointerEvents: "none"
+                                pointerEvents: "none",
+                                position: "fixed",
                             }}
-                            className="absolute top-0 left-0 w-[500px] h-[650px] overflow-hidden shadow-2xl"
+                            className="w-[400px] h-[520px] overflow-hidden shadow-2xl"
                         >
                             <Image
                                 src={urlFor(activeProject.mainImage).width(1000).height(1300).url()}
                                 alt={activeProject.title}
                                 fill
                                 className="object-cover"
-                                priority
+                                sizes="400px"
                             />
                             {/* Optional: Add Overlay Text on Image */}
                             <div className="absolute bottom-6 left-6 z-10">

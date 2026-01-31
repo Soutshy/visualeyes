@@ -1,42 +1,62 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
 import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
+import { urlFor } from "@/lib/sanity.client";
+import { HeroImagesGrouped } from "@/lib/sanity.queries";
 
-// --- Mock Data (Unsplash) ---
-const COLUMN_1 = [
-    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=2864&auto=format&fit=crop", // Fashion
-    "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=2560&auto=format&fit=crop", // Model
-    "https://images.unsplash.com/photo-1529139574466-a302c27e365b?q=80&w=2560&auto=format&fit=crop", // Urban fashion
-    "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2000&auto=format&fit=crop", // Dress
+// --- Fallback Data (Unsplash) - Used when no Sanity images exist ---
+const FALLBACK_COLUMN_1 = [
+    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=2864&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=2560&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1529139574466-a302c27e365b?q=80&w=2560&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=2000&auto=format&fit=crop",
 ];
 
-const COLUMN_2 = [
-    "https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=3270&auto=format&fit=crop", // Sport
-    "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?q=80&w=2560&auto=format&fit=crop", // Gym
-    "https://images.unsplash.com/photo-1552072805-2a9039d00e57?q=80&w=2000&auto=format&fit=crop", // Silhouette
-    "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=2000&auto=format&fit=crop", // Runner
+const FALLBACK_COLUMN_2 = [
+    "https://images.unsplash.com/photo-1517649763962-0c623066013b?q=80&w=3270&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1605296867304-46d5465a13f1?q=80&w=2560&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1552072805-2a9039d00e57?q=80&w=2000&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1461896836934-ffe607ba8211?q=80&w=2000&auto=format&fit=crop",
 ];
 
-const COLUMN_3 = [
-    "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=2550&auto=format&fit=crop", // Portrait
-    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=2000&auto=format&fit=crop", // Male Portrait
-    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=2000&auto=format&fit=crop", // Female Portrait
-    "https://images.unsplash.com/photo-1534030347209-567816b9eb3c?q=80&w=2000&auto=format&fit=crop", // Raw
+const FALLBACK_COLUMN_3 = [
+    "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=2550&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?q=80&w=2000&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=2000&auto=format&fit=crop",
+    "https://images.unsplash.com/photo-1534030347209-567816b9eb3c?q=80&w=2000&auto=format&fit=crop",
 ];
 
+interface HeroProps {
+    heroImages?: HeroImagesGrouped;
+}
 
-export function Hero() {
+export function Hero({ heroImages }: HeroProps) {
+    // Convert Sanity images to URLs, or use fallback
+    const getColumnImages = (column: 'column1' | 'column2' | 'column3', fallback: string[]) => {
+        const sanityImages = heroImages?.[column];
+        if (sanityImages && sanityImages.length > 0) {
+            return sanityImages.map(img => ({
+                src: urlFor(img.image).width(800).height(1200).url(),
+                alt: img.alt || 'Visual Eyes Photography'
+            }));
+        }
+        return fallback.map(src => ({ src, alt: 'Visual Eyes Photography' }));
+    };
+
+    const column1Images = getColumnImages('column1', FALLBACK_COLUMN_1);
+    const column2Images = getColumnImages('column2', FALLBACK_COLUMN_2);
+    const column3Images = getColumnImages('column3', FALLBACK_COLUMN_3);
+
     return (
-        <section className="relative h-screen w-full overflow-hidden bg-rich-black">
+        <section className="relative h-[100dvh] w-full overflow-hidden bg-rich-black">
 
             {/* The Wall (Columns) */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 h-[120vh] -mt-[10vh] w-full px-4 md:px-8 relative opacity-80">
-                <ParallaxColumn images={[...COLUMN_1, ...COLUMN_1]} speed={-20} className="hidden md:flex" />
-                <ParallaxColumn images={[...COLUMN_2, ...COLUMN_2]} speed={15} />
-                <ParallaxColumn images={[...COLUMN_3, ...COLUMN_3]} speed={-25} />
+                <ParallaxColumn images={[...column1Images, ...column1Images]} speed={-20} className="hidden md:flex" />
+                <ParallaxColumn images={[...column2Images, ...column2Images]} speed={15} />
+                <ParallaxColumn images={[...column3Images, ...column3Images]} speed={-25} />
             </div>
 
             {/* Overlay */}
@@ -66,13 +86,18 @@ export function Hero() {
     );
 }
 
-function ParallaxColumn({ images, speed, className }: { images: string[], speed: number, className?: string }) {
+interface ImageData {
+    src: string;
+    alt: string;
+}
+
+function ParallaxColumn({ images, speed, className }: { images: ImageData[], speed: number, className?: string }) {
     const yToken = speed > 0 ? ["-50%", "0%"] : ["0%", "-50%"];
 
     return (
-        <div className={cn("relative h-[200%] overflow-hidden", className)}>
+        <div className={cn("relative h-[200%] overflow-hidden will-change-transform", className)}>
             <motion.div
-                className="flex flex-col gap-4 w-full"
+                className="flex flex-col gap-4 w-full will-change-transform"
                 animate={{ y: yToken }}
                 transition={{
                     repeat: Infinity,
@@ -81,14 +106,15 @@ function ParallaxColumn({ images, speed, className }: { images: string[], speed:
                     ease: "linear",
                 }}
             >
-                {images.concat(images).map((src, i) => (
+                {images.concat(images).map((img, i) => (
                     <div key={i} className="relative w-full aspect-[2/3] md:aspect-[3/4] rounded-sm overflow-hidden flex-shrink-0 grayscale-[50%] hover:grayscale-0 transition-all duration-700">
                         <Image
-                            src={src}
-                            alt="Visual Eyes Work"
+                            src={img.src}
+                            alt={img.alt}
                             fill
                             className="object-cover"
-                            sizes="33vw"
+                            sizes="(max-width: 768px) 50vw, 33vw"
+                            priority={i < 2}
                         />
                     </div>
                 ))}
@@ -96,3 +122,4 @@ function ParallaxColumn({ images, speed, className }: { images: string[], speed:
         </div>
     )
 }
+

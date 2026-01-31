@@ -2,6 +2,10 @@
 
 import React, { createContext, useContext, useState } from "react";
 import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+
+// Premium easing curve (Awwwards signature)
+const LUXURY_EASE: [number, number, number, number] = [0.76, 0, 0.24, 1];
 
 // Context to control the Exit Transition
 interface TransitionContextType {
@@ -22,28 +26,52 @@ export function TransitionProvider({ children }: { children: React.ReactNode }) 
 
     const startTransition = async (href: string) => {
         setIsTransitioning(true);
-        // Timing must match the CSS transition duration of the "Exit Curtain"
-        // Let's say 800ms for a slow luxury glide
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        // Wait for exit animation
+        await new Promise((resolve) => setTimeout(resolve, 800));
 
         router.push(href);
 
-        // Reset state after navigation (though Template will take over visual blocking)
-        // We add a small delay to ensure new page is mounted before we unblock potentially
+        // Reset state after navigation
         setTimeout(() => {
             setIsTransitioning(false);
-        }, 500);
+        }, 400);
     };
 
     return (
         <TransitionContext.Provider value={{ startTransition, isTransitioning }}>
             {children}
-            {/* GLOBAL EXIT CURTAIN */}
-            {/* Slides from Bottom (100%) to Top (0%) when transitioning */}
-            <div
-                className={`fixed inset-0 bg-black z-[9999] pointer-events-none transition-transform duration-[1000ms] ease-in-out ${isTransitioning ? "translate-y-0" : "translate-y-full"
-                    }`}
-            />
+
+            {/* GLOBAL EXIT CURTAIN - Framer Motion Version */}
+            <AnimatePresence>
+                {isTransitioning && (
+                    <>
+                        {/* First layer - slides up */}
+                        <motion.div
+                            initial={{ y: "100%" }}
+                            animate={{ y: "0%" }}
+                            exit={{ y: "-100%" }}
+                            transition={{
+                                duration: 0.8,
+                                ease: LUXURY_EASE
+                            }}
+                            className="fixed inset-0 bg-rich-black z-[9998] pointer-events-none"
+                        />
+                        {/* Second layer - slight delay for depth */}
+                        <motion.div
+                            initial={{ y: "100%" }}
+                            animate={{ y: "0%" }}
+                            exit={{ y: "-100%" }}
+                            transition={{
+                                duration: 0.8,
+                                ease: LUXURY_EASE,
+                                delay: 0.05
+                            }}
+                            className="fixed inset-0 bg-gold/10 z-[9999] pointer-events-none"
+                        />
+                    </>
+                )}
+            </AnimatePresence>
         </TransitionContext.Provider>
     );
 }
+
